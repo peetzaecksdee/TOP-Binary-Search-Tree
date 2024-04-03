@@ -13,7 +13,7 @@ class Tree {
 
 	buildTree(array) {
 		array = [...new Set(array)].sort((a, b) => a - b); // Remove Duplicates and sort
-    
+
 		function recursiveBuild(start, end) {
 			if (start > end) return null;
 
@@ -49,36 +49,63 @@ class Tree {
 	}
 
 	insert(val) {
-
-		function recursiveInsert(root) {
+		(function recursive(root) {
 			if (!root) return new Node(val);
 
 			if (root.val > val) {
-				root.left = recursiveInsert(root.left, val);
+				root.left = recursive(root.left);
 			} else {
-				root.right = recursiveInsert(root.right, val);
+				root.right = recursive(root.right);
 			}
 			return root;
-		}
-
-		this.root = recursiveInsert(this.root, val);
+		})(this.root);
 	}
 
-  delete(val) {
+	delete(defaultValue) {
+		(function recursive(root, val = defaultValue) {
+			if (!root) return null;
 
-    function recursive(root) {
-      if (root.val === val) {
-        root
-        return;
-      }
-    }
+			if (root.val > val) {
+				root.left = recursive(root.left);
+			} else if (root.val < val) {
+				root.right = recursive(root.right);
+			} else {
+				if (!root.left) {
+					return root.right;
+				} else if (!root.right) {
+					return root.left;
+				}
 
-    recursive()
-  }
+				let node = root.right;
+				while (node.left) {
+					node = node.left;
+				}
+				root.val = node.val;
+				root.right = recursive(root.right, node.val);
+			}
+
+			return root;
+		})(this.root);
+	}
+
+	find(val) {
+		function recursive(root) {
+			if (!root) return null;
+			if (root.val === val) return root;
+
+			if (root.val > val) {
+				return recursive(root.left);
+			}
+			return recursive(root.right);
+		}
+
+		return recursive(this.root);
+	}
 }
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
 	if (node == null) {
+		console.log(null);
 		return;
 	}
 	if (node.right != null) {
@@ -91,7 +118,11 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 };
 
 const newTree = new Tree([7, 1, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
-prettyPrint(newTree.root);
+// prettyPrint(newTree.root);
 newTree.insert(15);
 newTree.insert(12);
+// prettyPrint(newTree.root);
+newTree.delete(4);
 prettyPrint(newTree.root);
+prettyPrint(newTree.find(5));
+prettyPrint(newTree.find(4));
