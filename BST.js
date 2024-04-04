@@ -1,3 +1,5 @@
+import Queue from './Queue';
+
 class Node {
 	constructor(val = 0) {
 		this.val = val;
@@ -101,6 +103,96 @@ class Tree {
 
 		return recursive(this.root);
 	}
+
+	levelOrderIterative(callback = (a) => {}) {
+		const queueArray = new Queue();
+		let resultArray = [this.root.val];
+		queueArray.enqueue(this.root);
+		while (!queueArray.isEmpty()) {
+			const curr = queueArray.dequeue();
+			callback(curr);
+			if (curr.left) {
+				resultArray.push(curr.left.val);
+				queueArray.enqueue(curr.left);
+			}
+			if (curr.right) {
+				resultArray.push(curr.right.val);
+				queueArray.enqueue(curr.right);
+			}
+		}
+		return resultArray;
+	}
+
+	levelOrderRecursive(callback = (a) => {}) {
+		let queueArray = new Queue();
+		queueArray.enqueue(this.root);
+		let resultArray = [this.root.val];
+		(function recursive() {
+			const curr = queueArray.dequeue();
+			if (curr.left) {
+				resultArray.push(curr.left.val);
+				queueArray.enqueue(curr.left);
+			}
+			if (curr.right) {
+				resultArray.push(curr.right.val);
+				queueArray.enqueue(curr.right);
+			}
+			if (!queueArray.isEmpty()) {
+				recursive();
+			}
+
+			callback();
+		})();
+		return resultArray;
+	}
+
+	preorder(callback = () => {}) {
+		let resArray = [];
+		(function recursive(root) {
+			if (!root) return;
+
+			callback(root);
+			resArray.push(root.val);
+			recursive(root.left);
+			recursive(root.right);
+		})(this.root)
+		return resArray;
+	}
+
+	inorder(callback = () => {}) {
+		let resArray = [];
+		(function recursive(root) {
+			if (!root) return;
+
+			recursive(root.left);
+			callback(root);
+			resArray.push(root.val);
+			recursive(root.right);
+		})(this.root)
+		return resArray;
+	}
+
+	postorder(callback = () => {}) {
+		let resArray = [];
+		(function recursive(root) {
+			if (!root) return;
+
+			recursive(root.left);
+			recursive(root.right);
+			resArray.push(root.val);
+			callback(root);
+		})(this.root)
+		return resArray;
+	}
+
+	height(node = this.root, height = 1) {
+		if (!node) return height;
+
+		let heightLeft = this.height(node.left, node.left ? height + 1 : height);
+		let heightRight = this.height(node.right, node.right ? height + 1 : height);
+
+		return Math.max(heightLeft, heightRight);
+	}
 }
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
@@ -117,7 +209,7 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 	}
 };
 
-const newTree = new Tree([7, 1, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+const newTree = new Tree([7, 1, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324, 532, 433]);
 // prettyPrint(newTree.root);
 newTree.insert(15);
 newTree.insert(12);
@@ -126,3 +218,9 @@ newTree.delete(4);
 prettyPrint(newTree.root);
 prettyPrint(newTree.find(5));
 prettyPrint(newTree.find(4));
+console.log(newTree.levelOrderIterative());
+console.log(newTree.levelOrderRecursive());
+console.log(newTree.preorder());
+console.log(newTree.inorder());
+console.log(newTree.postorder());
+console.log(newTree.height());
