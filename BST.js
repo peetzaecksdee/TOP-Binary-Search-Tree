@@ -245,3 +245,7 @@ for (let i = 0; i < 10; i++) {
 console.log(newTree.isBalanced);
 newTree.rebalance();
 console.log(newTree.isBalanced);
+console.log(newTree.levelOrderRecursive());
+console.log(newTree.preorder());
+console.log(newTree.inorder());
+console.log(newTree.postorder());
