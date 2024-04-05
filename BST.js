@@ -228,27 +228,20 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 	}
 };
 
-const newTree = new Tree([
-	7, 1, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324, 532, 433,
-]);
-// prettyPrint(newTree.root);
-newTree.insert(15);
-newTree.insert(2);
-newTree.insert(12);
-// prettyPrint(newTree.root);
-newTree.delete(4);
-prettyPrint(newTree.root);
-prettyPrint(newTree.find(5));
-prettyPrint(newTree.find(4));
+function randNum(max) {
+	return 1 + Math.floor(Math.random() * max)
+}
+
+const newTree = new Tree(new Array(randNum(randNum(100))).fill(0).map((val) => val + randNum(100)));
+// prettyPrint(newTree.root)
+console.log(newTree.isBalanced);
 console.log(newTree.levelOrderIterative());
-console.log(newTree.levelOrderRecursive());
 console.log(newTree.preorder());
 console.log(newTree.inorder());
 console.log(newTree.postorder());
-console.log(newTree.height());
-console.log(newTree.depth(newTree.root.left.right.right));
-console.log(newTree.depth(new Node(15)));
+for (let i = 0; i < 10; i++) {
+	newTree.insert(100 + randNum(900));
+}
 console.log(newTree.isBalanced);
 newTree.rebalance();
-prettyPrint(newTree.root)
 console.log(newTree.isBalanced);
