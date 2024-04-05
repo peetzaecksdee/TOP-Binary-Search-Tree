@@ -155,7 +155,7 @@ class Tree {
 			resArray.push(root.val);
 			recursive(root.left);
 			recursive(root.right);
-		})(this.root)
+		})(this.root);
 		return resArray;
 	}
 
@@ -168,7 +168,7 @@ class Tree {
 			callback(root);
 			resArray.push(root.val);
 			recursive(root.right);
-		})(this.root)
+		})(this.root);
 		return resArray;
 	}
 
@@ -181,17 +181,36 @@ class Tree {
 			recursive(root.right);
 			resArray.push(root.val);
 			callback(root);
-		})(this.root)
+		})(this.root);
 		return resArray;
 	}
 
-	height(node = this.root, height = 1) {
-		if (!node) return height;
+	height(node = this.root) {
+		if (!node) return 0;
 
-		let heightLeft = this.height(node.left, node.left ? height + 1 : height);
-		let heightRight = this.height(node.right, node.right ? height + 1 : height);
+		return 1 + Math.max(this.height(node.left), this.height(node.right));
+	}
 
-		return Math.max(heightLeft, heightRight);
+	depth(node, tree = this.root) {
+		if (!node || !tree) return -1;
+
+		if (node === tree) return 0;
+
+		if (node.val > tree.val) {
+			const right = this.depth(node, tree.right);
+			return right >= 0 ? 1 + right : right;
+		}
+		const left = this.depth(node, tree.left);
+		return left >= 0 ? 1 + left : left;
+	}
+
+	get isBalanced() {
+		return (this.height(this.root.left) === this.height(this.root.right));
+	}
+
+	rebalance() {
+		const vals = this.inorder();
+		this.root = this.buildTree(vals);
 	}
 }
 
@@ -209,9 +228,12 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 	}
 };
 
-const newTree = new Tree([7, 1, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324, 532, 433]);
+const newTree = new Tree([
+	7, 1, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324, 532, 433,
+]);
 // prettyPrint(newTree.root);
 newTree.insert(15);
+newTree.insert(2);
 newTree.insert(12);
 // prettyPrint(newTree.root);
 newTree.delete(4);
@@ -224,3 +246,9 @@ console.log(newTree.preorder());
 console.log(newTree.inorder());
 console.log(newTree.postorder());
 console.log(newTree.height());
+console.log(newTree.depth(newTree.root.left.right.right));
+console.log(newTree.depth(new Node(15)));
+console.log(newTree.isBalanced);
+newTree.rebalance();
+prettyPrint(newTree.root)
+console.log(newTree.isBalanced);
